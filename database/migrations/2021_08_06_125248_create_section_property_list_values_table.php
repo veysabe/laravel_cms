@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSectionPropertyTable extends Migration
+class CreateSectionPropertyListValuesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateSectionPropertyTable extends Migration
      */
     public function up()
     {
-        Schema::create('section_property', function (Blueprint $table) {
+        Schema::create('section_property_list_values', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('section_id');
             $table->unsignedBigInteger('property_id');
-            $table->string('value')->nullable();
+            $table->unsignedBigInteger('value');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateSectionPropertyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('section_property');
+        Schema::dropIfExists('section_property_list_values');
     }
 }

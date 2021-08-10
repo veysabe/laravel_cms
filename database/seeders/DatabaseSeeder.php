@@ -6,6 +6,7 @@ use App\Models\Element;
 use App\Models\Property;
 use App\Models\Section;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder

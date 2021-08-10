@@ -19,6 +19,7 @@ class CreateSectionPropertiesTable extends Migration
             $table->string('type');
             $table->unsignedBigInteger('sort')->default(0);
             $table->boolean('is_required')->default(false);
+            $table->boolean('insert_into_child')->default(false);
             $table->timestamps();
         });
     }

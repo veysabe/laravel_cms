@@ -43,8 +43,9 @@ class Section extends Model
         return $this->hasOne(SectionFields::class);
     }
 
-    public function depth($id = false)
+    public function depth()
     {
+        $id = $this->id;
         $query = DB::table('section_in_section_pivot');
         if ($id) {
             $query = $query
@@ -55,14 +56,27 @@ class Section extends Model
         return $id ? $this->whereIn('id', $ids) : $this->whereNotIn('id', $ids);
     }
 
-    public function reverseDepth($id = false)
+    public function reverseDepth()
     {
+        $id = $this->id;
         $ids = [];
         $query = DB::table('section_in_section_pivot')->get();
         $children = $query->pluck('section_id')->toArray();
         $parents = $query->pluck('parent_section_id')->toArray();
-        $tree = Arrays::makeParentChildrenTree($parents, $children)[$id];
+        $tree = Arrays::makeParentChildrenTree($parents, $children);
+        $tree = isset($tree[$id]) ? $tree[$id] : [];
         Arrays::getIds($tree, $ids);
         return $id ? $this->whereNotIn('id', $ids)->where('id', '!=', $id) : $this->whereIn('id', $ids)->where('id', '!=', $id);
+    }
+
+    public function getParents() {
+        $id = $this->id;
+        $ids = [];
+        $query = DB::table('section_in_section_pivot')->get();
+        $children = $query->pluck('section_id')->toArray();
+        $parents = $query->pluck('parent_section_id')->toArray();
+        $tree = Arrays::makeParentChildrenTree($parents, $children);
+        Arrays::getParentIds($tree, $id, $ids);
+        return Section::whereIn('id', $ids);
     }
 }

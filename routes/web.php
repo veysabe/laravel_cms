@@ -17,7 +17,5 @@ use App\Models\Element;
 */
 
 Route::get('/{section}', function (Section $section) {
-    echo "<pre>";
-    echo print_r($section->reverseDepth($section->id)->get()->toArray(), true);
-    echo "</pre>";
+
 });

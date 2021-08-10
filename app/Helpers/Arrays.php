@@ -32,4 +32,18 @@ class Arrays
             }
         }
     }
+
+    public static function getParentIds($tree, $value, &$result, &$flag = false) {
+        foreach ($tree as $k => $j) {
+            if (is_array($j)) {
+                static::getParentIds($j, $value, $result, $flag);
+                if ($flag) {
+                    $result[$k] = $k;
+                }
+            }
+            if ($j == $value) {
+                $flag = true;
+            }
+        }
+    }
 }

@@ -29,27 +29,9 @@ class SectionListLayout extends Table
     protected function columns(): array
     {
         return [
-            TD::make('')
-                ->align(TD::ALIGN_LEFT)
-                ->render(function (Section $section) {
-                    return DropDown::make()
-                        ->icon('menu')
-                        ->list([
-                            Link::make('Редактировать')
-                                ->route('platform.section.edit', $section),
-
-                            Button::make('Удалить')
-                                ->icon('trash')
-                                ->confirm('Данное действие невозможно отменить')
-                                ->method('remove', [
-                                    'id' => $section->id
-                                ])
-                        ]);
-                }),
-
             TD::make('name', 'Название')
                 ->render(function (Section $section) {
-                    if ($section->depth($section->id)->get()->count() < 1) {
+                    if ($section->depth()->get()->count() < 1) {
                         return Link::make($section->name)
                             ->route('platform.element.list', '?s=' . $section->id);
                     } else {
@@ -97,6 +79,37 @@ class SectionListLayout extends Table
                     $social = $section->social()->first();
                     return $social ? $social['change_percentage'] : 0;
                 }),
+
+            TD::make('')
+                ->align(TD::ALIGN_LEFT)
+                ->render(function (Section $section) {
+                    return DropDown::make()
+                        ->icon('menu')
+                        ->list([
+                            Link::make('Редактировать')
+                                ->route('platform.section.edit', $section),
+
+                            Button::make('Удалить')
+                                ->icon('trash')
+                                ->confirm('Данное действие невозможно отменить')
+                                ->method('remove', [
+                                    'id' => $section->id
+                                ])
+                        ]);
+                }),
+        ];
+    }
+
+    public function total(): array
+    {
+        return [
+            TD::make()
+                ->align(TD::ALIGN_LEFT)
+                ->render(function () {
+                    return Link::make('Создать раздел')
+                        ->icon('plus')
+                        ->route('platform.section.edit');
+                })
         ];
     }
 }

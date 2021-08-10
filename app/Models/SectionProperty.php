@@ -10,8 +10,15 @@ class SectionProperty extends Model
 {
     use HasFactory, asSource;
 
+    protected $guarded = [];
+
     public function section()
     {
         return $this->belongsTo(Section::class);
+    }
+
+    public function list_values()
+    {
+        return $this->hasMany(SectionPropertyListValues::class, 'property_id');
     }
 }

@@ -21,6 +21,7 @@ use App\Orchid\Screens\Element\ElementEditScreen;
 use App\Orchid\Screens\Element\ElementListScreen;
 use App\Orchid\Screens\Section\SectionEditScreen;
 use App\Orchid\Screens\Section\SectionListScreen;
+use App\Orchid\Screens\Property\SectionPropertyEdit;
 use App\Models\Section;
 
 /*
@@ -127,6 +128,9 @@ Route::screen('sections/{section?}', SectionListScreen::class)
             ->parent('platform.index')
             ->push('Разделы', route('platform.section.list'));
     });
+
+Route::screen('section/{section}/property/{property?}', SectionPropertyEdit::class)
+    ->name('platform.section.property.edit');
 
 Route::screen('property/{property?}', \App\Orchid\Screens\Property\PropertyEditScreen::class)
     ->name('platform.property.edit');

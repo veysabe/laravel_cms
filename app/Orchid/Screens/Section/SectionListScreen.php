@@ -4,8 +4,11 @@ namespace App\Orchid\Screens\Section;
 
 use App\Models\Section;
 use App\Orchid\Layouts\Section\SectionListLayout;
+use App\Orchid\Layouts\Section\SectionListPropertiesLayout;
+use App\Orchid\Layouts\Section\SectionListSettingsLayout;
 use Illuminate\Support\Facades\Request;
 use Orchid\Screen\Actions\Link;
+use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Screen;
 
 class SectionListScreen extends Screen
@@ -32,7 +35,7 @@ class SectionListScreen extends Screen
     public function query(Section $section): array
     {
         $request = Request::all();
-        $sections = $section->depth(isset($section) ? $section->id : false)->get();
+        $sections = $section->depth()->get();
         $this->section = $section;
         $this->exists = $section->exists;
 
@@ -52,7 +55,9 @@ class SectionListScreen extends Screen
             }
         }
         return [
-            'sections' => $sections
+            'sections' => $sections,
+            'settings' => $sections,
+            'properties' => $sections
         ];
     }
 
@@ -81,8 +86,16 @@ class SectionListScreen extends Screen
      */
     public function layout(): array
     {
+        $tabs = [
+            'Список' => SectionListLayout::class,
+        ];
+        if ($this->exists) {
+            $tabs['Настройки'] = SectionListSettingsLayout::class;
+            $tabs['Свойства'] = (new SectionListPropertiesLayout($this->section));
+        }
+        $layout = Layout::tabs($tabs);
         return [
-            SectionListLayout::class
+            $layout
         ];
     }
 
