@@ -2,6 +2,7 @@
 
 namespace App\Orchid;
 
+use App\Helpers\Arrays;
 use App\Models\Section;
 use Orchid\Platform\Dashboard;
 use Orchid\Platform\ItemPermission;
@@ -27,38 +28,28 @@ class PlatformProvider extends OrchidServiceProvider
      */
     public function registerMainMenu(): array
     {
-        $section = new Section();
-        $sections = $section->depth()->get();
-        $section_submenu = [];
-        foreach ($sections as $section) {
-            $subsections = $section->depth($section->id)->get();
-            $subsections_submenu = [];
-            foreach ($subsections as $subsection) {
-                $subsections_submenu[] = Menu::make($subsection->name)
-                    ->route('platform.section.list', $subsection)
-                    ->icon('folder');
-            }
-            $section_submenu[] = Menu::make($section->name)
-                ->route('platform.section.list', $section)
-                ->list($subsections_submenu)
-                ->icon('folder');
-        }
+        $sections = Section::all();
+        $tree = Arrays::buildTree($sections)->toArray();
+        $menu = \App\Helpers\Section::makeTreeMenu($tree);
         $section_submenu[] = Menu::make('Создать раздел')
             ->route('platform.section.edit')
             ->icon('plus');
-        return [
+
+        $main_menu = [
             Menu::make('Элементы')
                 ->icon('note')
                 ->route('platform.element.list'),
 
             Menu::make('Разделы')
                 ->icon('layers')
-                ->list($section_submenu),
+                ->list($menu),
 
             Menu::make('Свойства')
                 ->icon('wrench')
                 ->route('platform.property.edit'),
+        ];
 
+        $example_menu = [
             Menu::make('Example screen')
                 ->icon('monitor')
                 ->route('platform.example')
@@ -125,6 +116,7 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.systems.roles')
                 ->permission('platform.systems.roles'),
         ];
+        return isset($_GET['example']) && $_GET['example'] == 'Y' ? $main_menu + $example_menu : $main_menu;
     }
 
     /**

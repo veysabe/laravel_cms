@@ -2,6 +2,8 @@
 
 namespace App\Orchid\Layouts\Section\Rows;
 
+use App\Models\Section;
+use Illuminate\Support\Facades\Request;
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Input;
@@ -21,6 +23,9 @@ class SectionMainFields extends Rows
     {
         $this->query_list = $query_list;
         $this->section = $section;
+        if (!strlen($section->id)) {
+            $this->back_section = Section::find(Request::all(['bs']))->first();
+        }
     }
 
     /**
@@ -41,9 +46,19 @@ class SectionMainFields extends Rows
                 ->placeholder('Введите символьный код элемента'),
 
             Select::make('section.section')
-                ->title('Раздел')
-                ->fromQuery($this->query_list, 'name')
+                ->title('Разделы')
+                ->fromModel(Section::class, 'name')
+                ->help('Выбранные разделы будут использованы для фильтрации и отображения в публичной части сайта')
+                ->empty('')
                 ->multiple(),
+
+            Select::make('section.parent_section')
+                ->title('Раздел')
+                ->fromModel(Section::class, 'name')
+                ->help('Выбранный раздел будет использован для формирования URL и меню')
+                ->empty(
+                    isset($this->back_section->name) ? $this->back_section->name : '',
+                    isset($this->back_section->id) ? $this->back_section->id : ''),
 
             Input::make('section.sort')
                 ->title('Сортировка')

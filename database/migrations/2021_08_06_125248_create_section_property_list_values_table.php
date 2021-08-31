@@ -16,7 +16,7 @@ class CreateSectionPropertyListValuesTable extends Migration
         Schema::create('section_property_list_values', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('property_id');
-            $table->unsignedBigInteger('value');
+            $table->string('value');
             $table->timestamps();
         });
     }

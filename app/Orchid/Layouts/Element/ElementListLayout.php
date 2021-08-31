@@ -39,6 +39,23 @@ class ElementListLayout extends Table
 
             TD::make('sort', 'Сортировка'),
 
+            TD::make('element.section', 'Раздел')
+                ->render(function (Element $element) {
+                    $sections = $element->section()->get();
+                    if ($sections->count() > 1) {
+                        $section_list = [];
+                        foreach ($sections as $section) {
+                            $section_list[] = Link::make($section->name)->route('platform.section.edit', $section);
+                        }
+                        return DropDown::make('Несколько...')->list($section_list);
+                    } else {
+                        $section = $sections->first();
+                        return Link::make($section->name)
+                            ->route('platform.section.edit', $section);
+                    }
+//                    return Link::make($element->section()->first()->name);
+                }),
+
             TD::make('Действия')
                 ->align(TD::ALIGN_RIGHT)
                 ->render(function (Element $element) {
@@ -51,9 +68,9 @@ class ElementListLayout extends Table
                             Button::make('Удалить')
                                 ->icon('trash')
                                 ->confirm('Данное действие невозможно отменить')
-                            ->method('remove', [
-                                'id' => $element->id
-                            ])
+                                ->method('remove', [
+                                    'id' => $element->id
+                                ])
                         ]);
                 })
         ];

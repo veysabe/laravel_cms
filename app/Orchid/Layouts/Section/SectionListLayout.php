@@ -31,13 +31,8 @@ class SectionListLayout extends Table
         return [
             TD::make('name', 'Название')
                 ->render(function (Section $section) {
-                    if ($section->depth()->get()->count() < 1) {
-                        return Link::make($section->name)
-                            ->route('platform.element.list', '?s=' . $section->id);
-                    } else {
-                        return Link::make($section->name)
-                            ->route('platform.section.list', $section);
-                    }
+                    return Link::make($section->name)
+                        ->route('platform.section.list', $section);
                 })
                 ->filter(TD::FILTER_TEXT),
 

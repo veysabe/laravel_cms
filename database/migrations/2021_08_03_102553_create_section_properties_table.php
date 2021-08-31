@@ -17,7 +17,7 @@ class CreateSectionPropertiesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
-            $table->unsignedBigInteger('sort')->default(0);
+            $table->unsignedBigInteger('sort')->default(0)->nullable();
             $table->boolean('is_required')->default(false);
             $table->boolean('insert_into_child')->default(false);
             $table->timestamps();

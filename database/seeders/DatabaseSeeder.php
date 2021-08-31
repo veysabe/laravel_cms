@@ -90,7 +90,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         $sq_location = Section::create([
-           'name' => 'Локации',
+           'name' => 'Места',
            'code' => 'locations'
         ]);
 
@@ -98,24 +98,16 @@ class DatabaseSeeder extends Seeder
 
             $new_loc = Section::create([
                 'name' => $location['name'],
-                'code' => str_slug($location['name'])
-            ]);
-
-            DB::table('section_in_section_pivot')->insert([
-                'parent_section_id' => $sq_location->id,
-                'section_id' => $new_loc->id
+                'code' => str_slug($location['name']),
+                'parent_section' => $sq_location->id
             ]);
 
             if (!empty($location['locations'])) {
                 foreach ($location['locations'] as $sublocation) {
                     $new_sub_loc = Section::create([
                         'name' => $sublocation['name'],
-                        'code' => str_slug($sublocation['name'])
-                    ]);
-
-                    DB::table('section_in_section_pivot')->insert([
-                        'parent_section_id' => $new_loc->id,
-                        'section_id' => $new_sub_loc->id
+                        'code' => str_slug($sublocation['name']),
+                        'parent_section' => $new_loc->id
                     ]);
                 }
             }

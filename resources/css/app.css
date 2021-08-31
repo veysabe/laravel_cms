@@ -1,0 +1,9 @@
+.header {
+    display: flex;
+}
+
+.header > .parent {
+    border: 1px solid rgba(0, 0, 0, .5);
+    margin-right: 10px;
+    padding: 10px;
+}

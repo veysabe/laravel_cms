@@ -4,46 +4,25 @@
 namespace App\Helpers;
 
 
+use Illuminate\Support\Collection;
+
 class Arrays
 {
-    public static function makeParentChildrenTree($parents, $children) {
-        $p_temp = [];
-        foreach ($parents as $key => $parent) {
-            $p_temp[$parent][$children[$key]] = $children[$key];
-        }
-        $p_temp = array_reverse($p_temp, true);
-        foreach ($p_temp as $key => &$value) {
-            foreach ($value as $c_key => &$c_value) {
-                if (isset($p_temp[$c_key])) {
-                    $c_value = $p_temp[$c_key];
+    public static function buildTree($data, $parent = null, &$url = '', &$urls = []) {
+        $tree = new Collection();
+        foreach ($data as $d) {
+            if ($d->parent_section == $parent) {
+                $url2 = $url;
+                $url2 .= '/' . $d['code'];
+                $d->url = $url2;
+                $urls[] = $url2;
+                $children = self::buildTree($data, $d['id'], $url2, $urls);
+                if (!empty($children)) {
+                    $d->_children = $children;
                 }
+                $tree->add($d);
             }
         }
-        return $p_temp;
-    }
-
-    public static function getIds($tree, &$result) {
-        foreach ($tree as $k => $j) {
-            if(is_array($j)){
-                $result[] = $k;
-                static::getIds($j, $result);
-            } else {
-                $result[] = $j;
-            }
-        }
-    }
-
-    public static function getParentIds($tree, $value, &$result, &$flag = false) {
-        foreach ($tree as $k => $j) {
-            if (is_array($j)) {
-                static::getParentIds($j, $value, $result, $flag);
-                if ($flag) {
-                    $result[$k] = $k;
-                }
-            }
-            if ($j == $value) {
-                $flag = true;
-            }
-        }
+        return $tree;
     }
 }

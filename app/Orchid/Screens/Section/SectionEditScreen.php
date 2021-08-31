@@ -8,15 +8,20 @@ use App\Models\Section;
 use App\Models\SectionProperty;
 use App\Orchid\Layouts\Examples\ChartBarExample;
 use App\Orchid\Layouts\Section\Rows\SectionMainFields;
+use App\Orchid\Layouts\Section\Rows\SectionMenuFields;
 use App\Orchid\Layouts\Section\SectionStatsChart;
 use App\Orchid\Layouts\Section\Metric\SectionStatsMetric;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\DB;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Fields\SimpleMDE;
+use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
@@ -99,9 +104,8 @@ class SectionEditScreen extends Screen
     public function layout(): array
     {
         // Выводим свойства
-        $query_list = $this->exists
-            ? $this->section->reverseDepth()
-            : Section::query();
+        $query_list = Section::query();
+
         $property_layout = \App\Helpers\Section::makePropertiesList($this->section);
 
         $fields = [];
@@ -116,7 +120,12 @@ class SectionEditScreen extends Screen
 
         $tabs = [
             'Основные поля' => $main_fields,
-            'Настройки' => Layout::rows([]),
+            'Настройки' => [
+                (new SectionMenuFields($this->section)),
+                Layout::rows([
+                    SimpleMDE::make('markdown')
+                ])
+            ],
         ];
 
         if ($this->exists) {
@@ -146,20 +155,36 @@ class SectionEditScreen extends Screen
             $fill['sort'] = isset($fill['sort']) ? $fill['sort'] : 100;
             $properties = $fill['property'] ?? false;
             $sections = $fill['section'] ?? [];
-            $activate_properties = $fill['activate_property'] ?? [];
-            unset($fill['property'], $fill['section'], $fill['activate_property']);
+            $menu_setup = $fill['menu'] ?? false;
+
+            unset($fill['property'], $fill['section'], $fill['activate_property'], $fill['main_section'], $fill['menu']);
 
             $section->fill($fill)->save();
 
             $section->section()->sync($sections);
             if ($properties) {
                 foreach ($properties as $prop_id => $value) {
-                    $section->properties()->sync([$prop_id => ['value' => $value]]);
+                    $property_db = DB::table('section_property')->where(['property_id' => $prop_id, 'section_id' => $section->id]);
+                    if ($property_db->get()->isNotEmpty()) {
+                        $property_db->update(['value' => $value]);
+                    } else {
+                        DB::table('section_property')->insert(['property_id' => $prop_id, 'section_id' => $section->id, 'value' => $value]);
+                    }
                 }
             }
-            $section->properties()->sync(array_keys($activate_properties));
+            $section->menu()->delete();
+            if ($menu_setup) {
+                $do_delete = true;
+                foreach ($menu_setup as &$value) {
+                    if (strlen($value)) $do_delete = false;
+                    if ($value == 'on') $value = true;
+                }
+                if (!$do_delete) {
+                    $section->menu()->create($menu_setup);
+                }
+            }
         });
-        return redirect()->route('platform.section.list');
+        return redirect()->route('platform.section.edit', $section);
 
     }
 }

@@ -2,10 +2,13 @@
 
 namespace App\Orchid\Screens\Section;
 
+use App\Helpers\Arrays;
 use App\Models\Section;
+use App\Models\SectionProperty;
 use App\Orchid\Layouts\Section\SectionListLayout;
 use App\Orchid\Layouts\Section\SectionListPropertiesLayout;
 use App\Orchid\Layouts\Section\SectionListSettingsLayout;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Orchid\Screen\Actions\Link;
 use Orchid\Support\Facades\Layout;
@@ -35,12 +38,13 @@ class SectionListScreen extends Screen
     public function query(Section $section): array
     {
         $request = Request::all();
-        $sections = $section->depth()->get();
-        $this->section = $section;
+        $sections = Section::all();
         $this->exists = $section->exists;
+        $this->section = $section;
 
         if ($this->exists) {
             $this->name = $section->name;
+            $sections = Section::where('parent_section', $section->id)->get();
         }
         if (isset($request['sort'])) {
             $sections = stristr($request['sort'], '-')
@@ -48,8 +52,16 @@ class SectionListScreen extends Screen
                 : $sections->sortBy($request['sort']);
         }
         if (isset($request['filter'])) {
+            $sections = Section::query()->get();
             foreach ($request['filter'] as $filter_key => $filter_value) {
                 $sections = $sections->filter(function ($value, $key) use ($filter_value, $filter_key) {
+                    if (stristr($filter_value, ',')) {
+                        $filter_array = explode(',', $filter_value);
+                        foreach ($filter_array as &$fil_value) {
+                            $fil_value = trim($fil_value);
+                        }
+                        return in_array($value->$filter_key, $filter_array);
+                    }
                     return stristr($value->$filter_key, $filter_value);
                 })->all();
             }
@@ -57,7 +69,7 @@ class SectionListScreen extends Screen
         return [
             'sections' => $sections,
             'settings' => $sections,
-            'properties' => $sections
+            'properties' => $section->properties()->get()
         ];
     }
 
@@ -90,7 +102,7 @@ class SectionListScreen extends Screen
             'Список' => SectionListLayout::class,
         ];
         if ($this->exists) {
-            $tabs['Настройки'] = SectionListSettingsLayout::class;
+            $tabs['Настройки'] = Layout::view('admin.sectionSettings');
             $tabs['Свойства'] = (new SectionListPropertiesLayout($this->section));
         }
         $layout = Layout::tabs($tabs);
@@ -104,5 +116,13 @@ class SectionListScreen extends Screen
         Section::findOrFail($request->get('id'))->delete();
 
         \Orchid\Support\Facades\Toast::success('Раздел успешно удален');
+    }
+
+    public function removeProperty(\Illuminate\Http\Request $request) {
+        SectionProperty::findOrFail($request->get('id'))->delete();
+
+        DB::table('section_property')->where('property_id', $request->get('id'))->delete();
+
+        \Orchid\Support\Facades\Toast::success('Свойство успешно удалено');
     }
 }

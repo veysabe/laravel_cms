@@ -156,9 +156,9 @@ class ElementEditScreen extends Screen
                 Input::make('element.code')
                     ->title('Символьный код')
                     ->placeholder('Введите символьный код элемента'),
-                Relation::make('element.section')
+                Select::make('element.section')
                     ->title('Раздел')
-                    ->fromModel(Section::class, 'name')
+                    ->fromQuery(Section::where('is_active', true), 'name')
                     ->multiple(),
                 Input::make('element.sort')
                     ->title('Сортировка')
@@ -192,9 +192,12 @@ class ElementEditScreen extends Screen
     {
         DB::transaction(function () use ($request, $element) {
             $request->validate([
-                'element.code' => 'alpha_dash'
+                'element.code' => 'alpha_dash|nullable'
             ]);
             $fill = $request->get('element');
+            if (!$fill['code']) {
+                $fill['code'] = str_slug($fill['name']);
+            }
 
             $fill['is_active'] = isset($fill['is_active']);
             $fill['sort'] = isset($fill['sort']) ?? 100;

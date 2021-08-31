@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Route;
+use App\Helpers\Arrays;
 use App\Models\Section;
-use App\Models\Element;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Menu\MenuController;
+use App\Http\Controllers\URL\URLController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,17 @@ use App\Models\Element;
 |
 */
 
-Route::get('/{section}', function (Section $section) {
 
-});
+Route::get('/', [\App\Http\Controllers\MainController::class, 'index']);
+
+$urls = URLController::init()->generateUrls()->slug()->get();
+
+foreach ($urls as $url) {
+    $slug = $url->slug;
+    Route::get($url->url, function () use ($slug) {
+        $section = Section::where('code', $slug)->first();
+        echo "<pre>";
+        echo print_r($section->name, true);
+        echo "</pre>";
+    });
+}
