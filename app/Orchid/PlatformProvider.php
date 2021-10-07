@@ -36,6 +36,10 @@ class PlatformProvider extends OrchidServiceProvider
             ->icon('plus');
 
         $main_menu = [
+            Menu::make('Главная страница')
+                ->icon('')
+                ->route('platform.homepage'),
+
             Menu::make('Элементы')
                 ->icon('note')
                 ->route('platform.element.list'),
@@ -43,6 +47,8 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make('Разделы')
                 ->icon('layers')
                 ->list($menu),
+
+            Menu::make('Баннеры'),
 
             Menu::make('Свойства')
                 ->icon('wrench')

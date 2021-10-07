@@ -29,8 +29,9 @@ class MenuController extends Controller
         }
     }
 
-    public static function init($menu_type = 'header')
+    public static function init(Request $request)
     {
+        $menu_type = $request->get('type');
         $sections = Section::whereHas('menu', function ($query) use ($menu_type) {
             $query->where(function ($q) use ($menu_type) {
                 $q->where($menu_type, true)
@@ -38,8 +39,9 @@ class MenuController extends Controller
             })->where('hide_everywhere', null);
         })->orWhereDoesntHave('menu')->where('is_active', true)->with('menu')->get();
         $tree = Arrays::buildTree($sections);
-        echo '<div class="header">';
-        (new MenuController)->render($tree->toArray(), 0, null, $menu_type);
-        echo '</ul>';
+        return $tree->toJson();
+//        echo '<div class="header">';
+//        (new MenuController)->render($tree->toArray(), 0, null, $menu_type);
+//        echo '</ul>';
     }
 }

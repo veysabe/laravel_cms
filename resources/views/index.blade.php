@@ -12,13 +12,11 @@
 <h2>Header</h2>
 <div>
     @php
-        \App\Http\Controllers\Menu\MenuController::init();
     @endphp
 </div>
 <h2>Footer</h2>
 <div style="margin-top: 20px;">
     @php
-        \App\Http\Controllers\Menu\MenuController::init('footer');
     @endphp
 </div>
 </body>

@@ -17,3 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/menu/get/{type}', [\App\Http\Controllers\Menu\MenuController::class, 'init']);
+
+Route::post('/page/', [\App\Http\Controllers\PageController::class, 'getPage']);
+
+Route::post('/page/content/', [\App\Http\Controllers\MainController::class, '']);
+

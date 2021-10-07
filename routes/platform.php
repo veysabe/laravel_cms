@@ -135,4 +135,7 @@ Route::screen('section/{section}/property/{property?}', SectionPropertyEdit::cla
 Route::screen('property/{property?}', \App\Orchid\Screens\Property\PropertyEditScreen::class)
     ->name('platform.property.edit');
 
+Route::screen('homepage', \App\Orchid\Screens\HomePageEditScreen::class)
+    ->name('platform.homepage');
+
 //Route::screen('idea', 'Idea::class','platform.screens.idea');

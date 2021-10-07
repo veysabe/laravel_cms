@@ -18,16 +18,18 @@ use App\Http\Controllers\URL\URLController;
 */
 
 
-Route::get('/', [\App\Http\Controllers\MainController::class, 'index']);
+Route::get('/', function () {
+    return view('index');
+});
 
-$urls = URLController::init()->generateUrls()->slug()->get();
-
-foreach ($urls as $url) {
-    $slug = $url->slug;
-    Route::get($url->url, function () use ($slug) {
-        $section = Section::where('code', $slug)->first();
-        echo "<pre>";
-        echo print_r($section->name, true);
-        echo "</pre>";
-    });
-}
+//$urls = URLController::init()->generateUrls()->slug()->get();
+//
+//foreach ($urls as $url) {
+//    $slug = $url->slug;
+//    Route::get($url->url, function () use ($slug) {
+//        $section = Section::where('code', $slug)->first();
+//        echo "<pre>";
+//        echo print_r($section->name, true);
+//        echo "</pre>";
+//    });
+//}
