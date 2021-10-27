@@ -3,12 +3,15 @@
 namespace App\Orchid\Screens\Element;
 
 use App\Models\Element;
+use App\Models\Menu;
 use App\Models\Property;
 use App\Models\PropertyListValue;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Orchid\Screen\Fields\CheckBox;
+use Orchid\Screen\Fields\Picture;
+use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Fields\Select;
 use Orchid\Support\Facades\Alert;
 use Orchid\Screen\Actions\Button;
@@ -169,6 +172,21 @@ class ElementEditScreen extends Screen
             ]),
         ];
 
+        $banner_fields = [
+            Layout::rows([
+                Input::make('element.banner.title')
+                    ->title('Заголовок'),
+                Quill::make('element.banner.text')
+                    ->title('Текст'),
+                Input::make('element.banner.href')
+                    ->title('Ссылка'),
+                Input::make('element.banner.button_text')
+                    ->title('Текст на кнопке'),
+                Picture::make('element.banner.picture')
+                    ->title('Фоновое изображение')
+            ])
+        ];
+
         if (!empty($property_layout)) {
             $fields[] = Layout::rows($property_layout);
         }
@@ -179,6 +197,7 @@ class ElementEditScreen extends Screen
             'Основные поля' => $fields,
             'Настройки' => Layout::rows([]),
             'Активация свойств' => $activate_property_layout,
+            'Баннер' => $banner_fields
         ];
 
         $return_array[] = Layout::tabs(
@@ -205,12 +224,15 @@ class ElementEditScreen extends Screen
             $properties = $fill['property'] ?? false;
             $sections = $fill['section'] ?? [];
             $activate_properties = $fill['activate_property'] ?? [];
-            unset($fill['property'], $fill['section'], $fill['activate_property']);
+            $banner = $fill['banner'];
+            unset($fill['property'], $fill['section'], $fill['activate_property'], $fill['banner']);
 
             $element->fill($fill)->save();
 
 
             $element->section()->sync($sections);
+            $element->banner()->delete();
+            $element->banner()->updateOrCreate($banner);
             if ($properties) {
                 foreach ($properties as $prop_id => $value) {
                     $element->properties()->sync([$prop_id => ['value' => $value]]);

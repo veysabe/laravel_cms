@@ -31,6 +31,11 @@ class Element extends Model
         return $this->belongsToMany(Property::class);
     }
 
+    public function banner()
+    {
+        return $this->hasOne(ElementBanner::class);
+    }
+
     public function inSection($sectionId = false) {
         $query = DB::table('element_section');
         if ($sectionId) {

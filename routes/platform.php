@@ -113,6 +113,9 @@ Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platfor
 Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
 Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
 
+
+
+
 Route::screen('element/{element?}', ElementEditScreen::class)
     ->name('platform.element.edit');
 Route::screen('elements', ElementListScreen::class)
@@ -134,6 +137,12 @@ Route::screen('section/{section}/property/{property?}', SectionPropertyEdit::cla
 
 Route::screen('property/{property?}', \App\Orchid\Screens\Property\PropertyEditScreen::class)
     ->name('platform.property.edit');
+
+Route::screen('posts', \App\Orchid\Screens\Post\PostListScreen::class)
+    ->name('platform.post.list');
+
+Route::screen('post/{post?}', \App\Orchid\Screens\Post\PostEditScreen::class)
+    ->name('platform.post.edit');
 
 Route::screen('homepage', \App\Orchid\Screens\HomePageEditScreen::class)
     ->name('platform.homepage');

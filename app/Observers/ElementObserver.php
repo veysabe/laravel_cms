@@ -38,6 +38,7 @@ class ElementObserver
     public function deleted(Element $element)
     {
         DB::table('element_property')->where('element_id', $element->id)->delete();
+        $element->banner()->delete();
     }
 
     /**

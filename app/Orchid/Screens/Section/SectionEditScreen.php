@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Picture;
 use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\Select;
@@ -118,6 +119,21 @@ class SectionEditScreen extends Screen
 
         $fields[] = Layout::columns($main_fields);
 
+        $banner_fields = [
+            Layout::rows([
+                Input::make('section.banner.title')
+                    ->title('Заголовок'),
+                Quill::make('section.banner.text')
+                    ->title('Текст'),
+                Input::make('section.banner.href')
+                    ->title('Ссылка'),
+                Input::make('section.banner.button_text')
+                    ->title('Текст на кнопке'),
+                Picture::make('section.banner.picture')
+                    ->title('Фоновое изображение')
+            ])
+        ];
+
         $tabs = [
             'Основные поля' => $main_fields,
             'Настройки' => [
@@ -126,6 +142,7 @@ class SectionEditScreen extends Screen
                     SimpleMDE::make('markdown')
                 ])
             ],
+            'Баннер' => $banner_fields
         ];
 
         if ($this->exists) {

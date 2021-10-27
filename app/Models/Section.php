@@ -33,6 +33,11 @@ class Section extends Model
         return $this->belongsToMany(Section::class, 'section_in_section_pivot', 'section_id', 'parent_section_id');
     }
 
+    public function banner()
+    {
+        return $this->hasOne(SectionBanner::class);
+    }
+
     public function main_section()
     {
         return $this->belongsToMany(Section::class, 'main_section_pivot', 'section_id', 'parent_section_id');

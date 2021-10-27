@@ -48,7 +48,9 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('layers')
                 ->list($menu),
 
-            Menu::make('Баннеры'),
+            Menu::make('Блог')
+                ->icon('pencil')
+                ->route('platform.post.list'),
 
             Menu::make('Свойства')
                 ->icon('wrench')

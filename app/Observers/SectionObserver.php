@@ -47,6 +47,8 @@ class SectionObserver
         DB::table('section_property')
             ->where('section_id', $section->id)
             ->delete();
+
+        $section->banner()->delete();
     }
 
     /**
