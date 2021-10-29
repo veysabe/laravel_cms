@@ -13,7 +13,7 @@ class MainController extends Controller
             case 'content':
                 return new ContentController($block);
             case 'search':
-                return new SearchController();
+                return 1;
         }
     }
 }

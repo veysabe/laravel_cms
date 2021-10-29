@@ -22,5 +22,7 @@ Route::get('/menu/get/{type}', [\App\Http\Controllers\Menu\MenuController::class
 
 Route::post('/page/', [\App\Http\Controllers\PageController::class, 'getPage']);
 
+Route::post('/section/', [\App\Http\Controllers\PageController::class, 'getSection']);
+
 Route::post('/page/content/', [\App\Http\Controllers\MainController::class, '']);
 

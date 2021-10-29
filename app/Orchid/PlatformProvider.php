@@ -3,6 +3,7 @@
 namespace App\Orchid;
 
 use App\Helpers\Arrays;
+use App\Models\Page;
 use App\Models\Section;
 use Orchid\Platform\Dashboard;
 use Orchid\Platform\ItemPermission;
@@ -34,6 +35,8 @@ class PlatformProvider extends OrchidServiceProvider
         $section_submenu[] = Menu::make('Создать раздел')
             ->route('platform.section.edit')
             ->icon('plus');
+
+        $pages = Page::all();
 
         $main_menu = [
             Menu::make('Главная страница')

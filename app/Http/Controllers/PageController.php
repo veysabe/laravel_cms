@@ -22,6 +22,12 @@ class PageController extends Controller
         return $page;
     }
 
+    public function getSection(Request $request)
+    {
+        $section = Section::where('code', $request->get('code'))->first()->toJson();
+        return $section;
+    }
+
     /**
      * Принимает параметры блока через POST-запрос в параметре "cfg"
      *
