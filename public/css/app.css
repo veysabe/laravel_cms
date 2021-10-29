@@ -10002,3 +10002,7 @@ h3 {
     border-color: #dee2e6;
   }
 }
+
+.header-brand.order-last {
+    display: none;
+}

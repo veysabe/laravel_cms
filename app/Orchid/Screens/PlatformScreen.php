@@ -15,14 +15,14 @@ class PlatformScreen extends Screen
      *
      * @var string
      */
-    public $name = 'Get Started';
+    public $name = 'Афиша Казани';
 
     /**
      * Display header description.
      *
      * @var string
      */
-    public $description = 'Welcome to your Orchid application.';
+    public $description = '';
 
     /**
      * Query data.
@@ -42,17 +42,17 @@ class PlatformScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Link::make('Website')
-                ->href('http://orchid.software')
-                ->icon('globe-alt'),
-
-            Link::make('Documentation')
-                ->href('https://orchid.software/en/docs')
-                ->icon('docs'),
-
-            Link::make('GitHub')
-                ->href('https://github.com/orchidsoftware/platform')
-                ->icon('social-github'),
+//            Link::make('Website')
+//                ->href('http://orchid.software')
+//                ->icon('globe-alt'),
+//
+//            Link::make('Documentation')
+//                ->href('https://orchid.software/en/docs')
+//                ->icon('docs'),
+//
+//            Link::make('GitHub')
+//                ->href('https://github.com/orchidsoftware/platform')
+//                ->icon('social-github'),
         ];
     }
 
@@ -64,7 +64,7 @@ class PlatformScreen extends Screen
     public function layout(): array
     {
         return [
-            Layout::view('platform::partials.welcome'),
+//            Layout::view('platform::partials.welcome'),
         ];
     }
 }
