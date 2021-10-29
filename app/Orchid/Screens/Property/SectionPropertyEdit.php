@@ -87,25 +87,33 @@ class SectionPropertyEdit extends Screen
         return [
             Layout::wrapper('admin.property.propertyEdit', [
                 'bar' =>
-                    Layout::rows([
-                        Input::make('sectionProperty.name')
-                            ->title('Название'),
-                        Select::make('sectionProperty.type')
-                            ->title('Тип')
-                            ->options([
-                                'LIST' => 'Список',
-                                'STRING' => 'Строка',
-                            ]),
-                        Input::make('sectionProperty.sort')
-                            ->title('Сортировка')
-                            ->type('number'),
-                        CheckBox::make('sectionProperty.is_required')
-                            ->placeholder('Обязательное поле'),
-                        CheckBox::make('sectionProperty.insert_into_child')
-                            ->placeholder('Применить в дочерних разделах'),
-                    ])->title('Поля'),
-                ]),
-            Layout::view('admin.property.propertyEdit')
+                    Layout::columns([
+                        Layout::rows([
+                            Input::make('sectionProperty.name')
+                                ->title('Название')
+                                ->required(true),
+                            Select::make('sectionProperty.type')
+                                ->title('Тип')
+                                ->options([
+                                    'LIST' => 'Список',
+                                    'STRING' => 'Строка',
+                                ]),
+                            Input::make('sectionProperty.sort')
+                                ->title('Сортировка')
+                                ->type('number'),
+                            CheckBox::make('sectionProperty.is_required')
+                                ->placeholder('Обязательное поле'),
+                            CheckBox::make('sectionProperty.insert_into_child')
+                                ->placeholder('Применить в дочерних разделах'),
+                        ])->title('Поля'),
+                        Layout::rows([
+                            Matrix::make('sectionProperty.list_values')
+                                ->columns([
+                                    'Значение' => 'value',
+                                ])->class('123')
+                        ])->title('Значения свойства типа "Список"')
+                    ])
+            ]),
         ];
 //        return [
 //            Layout::columns([

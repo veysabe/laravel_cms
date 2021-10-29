@@ -51,10 +51,6 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make('Блог')
                 ->icon('pencil')
                 ->route('platform.post.list'),
-
-            Menu::make('Свойства')
-                ->icon('wrench')
-                ->route('platform.property.edit'),
         ];
 
         $example_menu = [
